@@ -14,7 +14,7 @@ static default_random_engine global_random_engine;
  * 
  * @param rows    矩阵的行数
  * @param cols    矩阵的列数
- * @param mean    正太分布随机数的矩阵
+ * @param mean    正太分布随机数的均值
  * @param stddev  正太分布随机数的标准差
  * @return Matrixf 
  */
