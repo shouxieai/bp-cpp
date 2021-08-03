@@ -291,4 +291,60 @@ void print_matrix(const Matrix<_T>& a, const char* format =
     }
 }
 
+
+enum class TextColor : int{
+    None   = 0,     // 无颜色配置
+    Black  = 30,    // 黑色
+    Red    = 31,    // 红色
+    Green  = 32,    // 绿色
+    Yellow = 33,    // 黄色
+    Blue   = 34,    // 蓝色
+    Rosein = 35,    // 品红
+    Cyan   = 36,    // 青色
+    White  = 37     // 白色
+};
+
+enum class TextBackgroundColor : int{
+    None   = 0,     // 无颜色配置
+    Black  = 40,    // 黑色
+    Red    = 41,    // 红色
+    Green  = 42,    // 绿色
+    Yellow = 43,    // 黄色
+    Blue   = 44,    // 蓝色
+    Rosein = 45,    // 品红
+    Cyan   = 46,    // 青色
+    White  = 47     // 白色
+};
+
+static std::string color_text(
+    const std::string& text, 
+    TextColor color=TextColor::None, 
+    TextBackgroundColor background=TextBackgroundColor::None
+){
+    if(color == TextColor::None && background == TextBackgroundColor::None)
+        return text;
+
+    #ifdef _WIN64
+        // windows is ignore
+        return text;
+    #endif
+
+    char line_text[1000] = "\033[";
+    int size = sizeof(line_text) - 2;
+    char* p  = line_text + 2;
+
+    if(color != TextColor::None){
+        const char* fmt = background != TextBackgroundColor::None ? "%d;" : "%d";
+        int n = snprintf(p, size, fmt, color);
+        p += n;  size -= n;
+    }
+
+    if(background != TextBackgroundColor::None){
+        int n = snprintf(p, size, "%d", background);
+        p += n;  size -= n;
+    }
+    snprintf(p, size, "m%s\033[0m", text.c_str());
+    return line_text;
+}
+
 #endif // MATRIX_HPP

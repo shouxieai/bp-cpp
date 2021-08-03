@@ -8,6 +8,7 @@ using namespace std;
 // 定义全局的随机数引擎
 static default_random_engine global_random_engine;
 
+
 /**
  * @brief 创建一个正太分布的随机数矩阵
  * 
@@ -397,7 +398,13 @@ int do_test_dataset(){
         auto image       = Matrixu(28, 28, test_images.ptr(image_index));
         print_matrix(image);
         print_matrix(probability);
-        INFO("Predict is %d, confidence is %f", label, confidence);
+        INFO(
+            color_text(
+                "Predict is [%d], confidence is [%f]", 
+                TextColor::Red
+            ).c_str(), 
+            label, confidence
+        );
         INFO("=========================================================================");
         printf("Press 'Enter' to next, Press 'q' to quit: ");
         int c = getchar();
@@ -440,7 +447,12 @@ int do_test_bmp(const char* file){
 
     print_matrix(Matrixu(28, 28, image.ptr()));
     print_matrix(probability);
-    INFO("BMP %s Predict is %d, confidence is %f", file, label, confidence);
+    INFO(
+        color_text(
+            "BMP %s Predict is [%d], confidence is [%f]",
+            TextColor::Red
+        ).c_str(), 
+    file, label, confidence);
     INFO("=========================================================================");
     return 0;
 }

@@ -1,5 +1,5 @@
 ## 彻底弄懂BP反向传播，15行代码，C++实现也简单
-1. 使用C++实现图像分类，nmist识别率达到<font color=red>**96.34%**</font>
+1. 使用C++实现图像分类，10轮nmist识别率达到<font color=red>**96.34%**</font>
 2. 基于mnist数据集的BP算法，专业
 3. 大量的备注，为了你学懂
 4. 代码简单，核心代码15行
@@ -7,10 +7,11 @@
 
 ## 你能学习到
 1. mnist数据集的分类
-2. SGD Momentum优化器
+2. SGD Momentum优化器，其实很简单
 3. 矩阵求导来简化BP算法，向量化
 4. 凯明初始化
 5. BP的核心计算流程
+6. 了解到，神经网络到底训练个啥玩意，模型存储了啥玩意
 
 ![](workspace/background.jpeg)
 
@@ -27,7 +28,9 @@ bash ./download.sh
 
 2. 运行
 ```bash
-make test
+make test               测试查看效果
+make image              加载workspace/5.bmp文件识别
+make train              训练模型
 ```
 
 ## 如果失败，请手动完成
@@ -36,10 +39,6 @@ make test
 3. 执行`make train`训练模型，然后`make test`进行模型测试
 
 ## 使用方式
-```
-make train      进行训练
-```
-
 ```bash
 cd workspace 
 
@@ -59,3 +58,4 @@ Help:
 - 进博客扫码加微信进群
 1. 我们的博客：http://zifuture.com:8090/
 2. 我们的B站：https://space.bilibili.com/1413433465/
+    - 关于BP的C++视频教程可崔更
