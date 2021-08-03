@@ -539,7 +539,7 @@ int do_train(){
 
 int main(int argc, char** argv){
 
-    const char* method = "test";
+    const char* method = "";
     if(argc > 1){
         method = argv[1];
     }

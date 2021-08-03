@@ -40,7 +40,7 @@ objs/%.mk : src/%.cpp
 pro : workspace/pro
 
 run : pro
-	@cd workspace && ./pro
+	@cd workspace && ./pro train
 
 test : pro
 	@cd workspace && ./pro test

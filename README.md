@@ -1,9 +1,59 @@
-## 彻底弄懂BP反向传播算法，C++实现也简单
-1. 使用C++实现图像分类，nmist识别率达到96.34%
-2. 基于mnist数据集的BP算法
+## 彻底弄懂BP反向传播，15行代码，C++实现也简单
+1. 使用C++实现图像分类，nmist识别率达到<font color=red>**96.34%**</font>
+2. 基于mnist数据集的BP算法，专业
 3. 大量的备注，为了你学懂
+4. 代码简单，核心代码15行
+5. 仅仅依赖OpenBLAS（为了速度），如果不依赖太慢了。可以学习下
 
-![](background.jpeg)
+## 你能学习到
+1. mnist数据集的分类
+2. SGD Momentum优化器
+3. 矩阵求导来简化BP算法，向量化
+4. 凯明初始化
+5. BP的核心计算流程
+
+![](workspace/background.jpeg)
+
+## 执行起来
+1. 下载数据集/依赖项，并解压编译
+- bash ./download.sh这个环节干了两件事
+    - 第一下载mnist数据集
+    - 第二下载OpenBLAS依赖项，并且解压后编译
+```bash
+git clone git@github.com:shouxieai/bp-cpp.git
+cd bp-cpp
+bash ./download.sh
+```
+
+2. 运行
+```bash
+make test
+```
+
+## 如果失败，请手动完成
+1. 下载[OpenBLAS](https://github.com/xianyi/OpenBLAS/releases)，编译后放到lean目录下，确保Makefile中路径匹配正确
+2. 下载[MNIST数据集](http://yann.lecun.com/exdb/mnist/)放到workspace目录下
+3. 执行`make train`训练模型，然后`make test`进行模型测试
+
+## 使用方式
+```
+make train      进行训练
+```
+
+```bash
+cd workspace 
+
+Help: 
+     ./pro train        执行训练
+     ./pro test         执行测试
+     ./pro image 5.bmp  加载28x28的bmp图像文件进行预测
+```
+
+## 执行起来的效果图
+![](workspace/test_console.png)
+
+## 训练的效果图
+![](workspace/train_console.png)
 
 ## 关于
 - 进博客扫码加微信进群
