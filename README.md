@@ -3,7 +3,7 @@
 2. 基于mnist数据集的BP算法
 3. 大量的备注，为了你学懂
 
-![](workspace/background.jpeg)
+![](background.jpeg)
 
 ## 关于
 - 进博客扫码加微信进群
