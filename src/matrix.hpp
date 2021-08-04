@@ -101,8 +101,29 @@ public:
     // inplace的sigmoid
     Matrix<_DataType>& sigmoid_(){
         auto ptr = data_->data();
+        for(int i = 0; i < data_->size(); ++i, ++ptr){
+            _DataType& x = *ptr;
+
+            // 避免sigmoid中exp的上溢出
+            if(x < 0){
+                x = exp(x) / (1 + exp(x));
+            }else{
+                x = 1 / (1 + exp(-x));
+            }
+        }
+        return *this;
+    }
+
+    Matrix<_DataType> relu(){
+        auto out = this->copy();
+        return out.relu_();
+    }
+    
+    // inplace的sigmoid
+    Matrix<_DataType>& relu_(){
+        auto ptr = data_->data();
         for(int i = 0; i < data_->size(); ++i, ++ptr)
-            *ptr = 1 / (1 + exp(-*ptr));
+            *ptr = std::max<_DataType>(_DataType(0), *ptr);
         return *this;
     }
 

@@ -30,6 +30,20 @@ Matrixf create_normal_distribution_matrix(int rows, int cols, float mean=0.0f, f
 }
 
 /**
+ * @brief 填充一个伯努利分布的随机数矩阵
+ * 
+ * @param prob  指定为1的概率
+ */
+void fill_bernoulli_distribution_matrix(Matrixu& matrix, float prob = 0.5){
+
+    bernoulli_distribution bernoulli(prob);
+    auto ptr = matrix.ptr();
+    for(int i = 0; i < matrix.numel(); ++i, ++ptr){
+        *ptr = bernoulli(global_random_engine);
+    }
+}
+
+/**
  * @brief 加载mnist数据集的label文件
  *  如果文件不符合返回空矩阵
  * 
@@ -207,6 +221,25 @@ Matrixf delta_sigmoid(const Matrixf& sigmoid_value){
 }
 
 /**
+ * @brief 对y = relu(x)中，对x求导
+ * f' = x <= 0 ? 0 : 1
+ * 
+ * @param grad       loss对y的导数
+ * @param x          x的值
+ * @return Matrixf 
+ */
+Matrixf delta_relu(const Matrixf& grad, const Matrixf& x){
+    auto out = grad.copy();
+    auto optr = out.ptr();
+    auto xptr = x.ptr();
+    for(int i = 0; i < out.numel(); ++i, ++optr, ++xptr){
+        if(*xptr <= 0)
+            *optr = 0;
+    }
+    return out;
+}
+
+/**
  * @brief 行方向求和
  * 对矩阵的所有行求和，即dst[1xn] = value[mxn]
  * 所有行求和变为1行
@@ -233,6 +266,7 @@ Matrixf row_sum(const Matrixf& value){
  */
 float compute_loss(const Matrixf& probability, const Matrixf& onehot_labels){
 
+    float eps = 1e-5;
     float sum_loss  = 0;
     auto pred_ptr   = probability.ptr();
     auto onehot_ptr = onehot_labels.ptr();
@@ -240,6 +274,7 @@ float compute_loss(const Matrixf& probability, const Matrixf& onehot_labels){
     for(int i = 0; i < numel; ++i, ++pred_ptr, ++onehot_ptr){
         auto y = *onehot_ptr;
         auto p = *pred_ptr;
+        p = max(min(p, 1 - eps), eps);
         sum_loss += -(y * log(p) + (1 - y) * log(1 - p));
     }
     return sum_loss / probability.rows();
@@ -389,7 +424,7 @@ int do_test_dataset(){
     for(int i = 0; i < test_norm_images.rows(); ++i){
         int image_index  = indexs[i];
         auto item        = choice_rows(test_norm_images, indexs, i, 1);
-        auto hidden      = (gemm_mul(item, false, input_to_hidden, false)    + hidden_bias).sigmoid();
+        auto hidden      = (gemm_mul(item, false, input_to_hidden, false)    + hidden_bias).relu();
         auto probability = (gemm_mul(hidden, false, hidden_to_output, false) + output_bias).sigmoid();
         auto prob_ptr    = probability.ptr();
         int label        = std::max_element(prob_ptr, prob_ptr + probability.cols()) - prob_ptr;
@@ -439,7 +474,7 @@ int do_test_bmp(const char* file){
     }
 
     auto item        = normalize_image_to_matrix(image);
-    auto hidden      = (gemm_mul(item, false, input_to_hidden, false)    + hidden_bias).sigmoid();
+    auto hidden      = (gemm_mul(item, false, input_to_hidden, false)    + hidden_bias).relu();
     auto probability = (gemm_mul(hidden, false, hidden_to_output, false) + output_bias).sigmoid();
     auto prob_ptr    = probability.ptr();
     int label        = std::max_element(prob_ptr, prob_ptr + probability.cols()) - prob_ptr;
@@ -472,23 +507,28 @@ int do_train(){
     auto test_norm_images    = normalize_image_to_matrix(test_images);
     auto test_onehot_labels  = label_to_onehot(test_labels);
 
-    int num_images = train_norm_images.rows();
-    int num_input  = train_norm_images.cols();
-    int num_hidden = 1024;
-    int num_output = 10;
-    int num_epoch  = 10;
-    float lr       = 1e-1;
-    int batch_size = 256;
-    float momentum = 0.9f;
+    int num_images  = train_norm_images.rows();
+    int num_input   = train_norm_images.cols();
+    int num_hidden  = 1024;
+    int num_output  = 10;
+    int num_epoch   = 10;
+    float lr        = 1e-1;
+    int batch_size  = 256;
+    float momentum  = 0.9f;
     int num_batch_per_epoch = num_images / batch_size;
     auto image_indexs       = range(num_images);
 
-    Matrixf input_to_hidden  = create_normal_distribution_matrix(num_input,  num_hidden, 0, 1.0f / sqrt((float)num_input));
+    // 凯明初始化，fan_in + fan_out
+    Matrixf input_to_hidden  = create_normal_distribution_matrix(num_input,  num_hidden, 0, 2.0f / sqrt((float)(num_input + num_hidden)));
     Matrixf hidden_bias(1, num_hidden);
-    Matrixf hidden_to_output = create_normal_distribution_matrix(num_hidden, num_output, 0, 1.0f / sqrt((float)num_hidden));
+    Matrixf hidden_to_output = create_normal_distribution_matrix(num_hidden, num_output, 0, 1.0f / sqrt((float)(num_hidden + num_output)));
     Matrixf output_bias(1, num_output);
     SGDMomentum optim;
     for(int epoch = 0; epoch < num_epoch; ++epoch){
+
+        if(epoch == 8){
+            lr *= 0.1;
+        }
 
         // 打乱索引
         std::shuffle(image_indexs.begin(), image_indexs.end(), global_random_engine);
@@ -500,13 +540,13 @@ int do_train(){
             auto x           = choice_rows(train_norm_images,   image_indexs, ibatch * batch_size, batch_size);
             auto y           = choice_rows(train_onehot_labels, image_indexs, ibatch * batch_size, batch_size);
             auto hidden      = gemm_mul(x,          false, input_to_hidden,  false) + hidden_bias;
-            auto hidden_act  = hidden.sigmoid();
+            auto hidden_act  = hidden.relu();
             auto output      = gemm_mul(hidden_act, false, hidden_to_output, false) + output_bias;
             auto probability = output.sigmoid();
             float loss       = compute_loss(probability, y);
 
             if(ibatch % 50 == 0){
-                INFO("Epoch %.2f / %d, Loss: %f", epoch + ibatch / (float)num_batch_per_epoch, num_epoch, loss);
+                INFO("Epoch %.2f / %d, Loss: %f, LR: %f", epoch + ibatch / (float)num_batch_per_epoch, num_epoch, loss, lr);
             }
 
             // 反向过程
@@ -518,11 +558,11 @@ int do_train(){
 
             // 第二个Linear求导
             auto doutput_bias      = row_sum(doutput);
-            auto dhidden_act       = gemm_mul(doutput, false, hidden_to_output, true);
             auto dhidden_to_output = gemm_mul(hidden_act, true, doutput, false);
+            auto dhidden_act       = gemm_mul(doutput, false, hidden_to_output, true);
 
             // 第一个Linear输出求导
-            auto dhidden           = dhidden_act * delta_sigmoid(hidden_act);
+            auto dhidden           = delta_relu(dhidden_act, hidden);
 
             // 第一个Linear求导
             auto dinput_to_hidden  = gemm_mul(x, true, dhidden, false);
@@ -537,8 +577,8 @@ int do_train(){
         }
 
         // 模型对测试集进行测试，并打印精度
-        auto test_hidden      = gemm_mul(test_norm_images, input_to_hidden).sigmoid();
-        auto test_probability = gemm_mul(test_hidden, hidden_to_output).sigmoid();
+        auto test_hidden      = (gemm_mul(test_norm_images, input_to_hidden) + hidden_bias).relu();
+        auto test_probability = (gemm_mul(test_hidden, hidden_to_output)     + output_bias).sigmoid();
         float accuracy        = eval_test_accuracy(test_probability, test_labels);
         float test_loss       = compute_loss(test_probability, test_onehot_labels);
         INFO("Test Accuracy: %.2f %%, Loss: %f", accuracy * 100, test_loss);

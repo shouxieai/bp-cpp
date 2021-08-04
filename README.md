@@ -1,17 +1,17 @@
 ## 彻底弄懂BP反向传播，15行代码，C++实现也简单
-1. 使用C++实现图像分类，10轮nmist识别率达到<font color=red>**96.34%**</font>
+1. 使用C++实现图像分类，10轮nmist识别率达到<font color=red>**98.29%**</font>
 2. 基于mnist数据集的BP算法，专业
 3. 大量的备注，为了你学懂
 4. 代码简单，核心代码15行
 5. 仅仅依赖OpenBLAS（为了速度），如果不依赖太慢了。可以学习下
 
-## 你能学习到
-1. mnist数据集的分类
-2. SGD Momentum优化器，其实很简单
-3. 矩阵求导来简化BP算法，向量化
-4. 凯明初始化
-5. BP的核心计算流程
-6. 了解到，神经网络到底训练个啥玩意，模型存储了啥玩意
+## 训练技巧
+1. 权重初始化，凯明初始化，fan_in + fan_out
+2. ReLU激活函数
+3. SGD Momentum
+4. 学习率衰减
+5. loss函数中log的上下溢控制
+6. sigmoid的exp上溢控制
 
 ![](workspace/background.jpeg)
 
