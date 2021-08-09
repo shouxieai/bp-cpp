@@ -56,6 +56,6 @@ Help:
 
 ## 关于
 - 进博客扫码加微信进群
-1. 我们的博客：http://zifuture.com:8090/
+1. 我们的博客：http://www.zifuture.com:8090/archives/bp
 2. 我们的B站：https://space.bilibili.com/1413433465/
     - 关于BP的C++视频教程可崔更
