@@ -1,0 +1,5 @@
+/data/sxai/bpc++/build/CMakeFiles/edit_cache.dir
+/data/sxai/bpc++/build/CMakeFiles/pro.dir
+/data/sxai/bpc++/build/CMakeFiles/dotest.dir
+/data/sxai/bpc++/build/CMakeFiles/train.dir
+/data/sxai/bpc++/build/CMakeFiles/rebuild_cache.dir
