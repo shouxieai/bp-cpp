@@ -4,7 +4,8 @@ add_definitions(-std=c++11)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Release)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/workspace)
+set(WORKSPACE ${PROJECT_SOURCE_DIR}/workspace)
+set(EXECUTABLE_OUTPUT_PATH ${WORKSPACE})
 
 set(OPENBLAS_DIR ${PROJECT_SOURCE_DIR}/lean/OpenBLAS0.3.17)
 include_directories(${OPENBLAS_DIR}/include)
@@ -19,13 +20,13 @@ target_link_libraries(pro openblas)
 add_custom_target(
     train
     DEPENDS pro
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/workspace
+    WORKING_DIRECTORY ${WORKSPACE}
     COMMAND ./pro train
 )
 
 add_custom_target(
     dotest 
     DEPENDS pro
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/workspace
+    WORKING_DIRECTORY ${WORKSPACE}
     COMMAND ./pro test
 )

@@ -10,9 +10,6 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../src"
-  "../src/tensorRT"
-  "../src/tensorRT/common"
   "../lean/OpenBLAS0.3.17/include"
   )
 

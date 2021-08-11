@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++11 -O3 -Wfatal-errors -pthread -w -g -fopenmp -O3 -DNDEBUG 
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/data/sxai/bpc++/src -I/data/sxai/bpc++/src/tensorRT -I/data/sxai/bpc++/src/tensorRT/common -I/data/sxai/bpc++/lean/OpenBLAS0.3.17/include 
+CXX_INCLUDES = -I/data/sxai/bpc++/lean/OpenBLAS0.3.17/include 
 
