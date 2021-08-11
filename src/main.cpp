@@ -159,7 +159,8 @@ Matrixf normalize_image_to_matrix(const Matrixu& images){
     auto out_ptr = out.ptr();
     auto image_ptr = images.ptr();
     for(int i = 0; i < images.numel(); ++i, ++out_ptr, ++image_ptr)
-        *out_ptr = *image_ptr / 255.0f - 0.5f;
+        //*out_ptr = *image_ptr / 255.0f - 0.5f;
+        *out_ptr = (*image_ptr / 255.0f - 0.1307f) / 0.3081f;
     return out;
 }
 

@@ -31,12 +31,15 @@
 *.out
 *.app
 
+/workspace/data
+/workspace/.ipynb_checkpoints
 /workspace/t10k-images-idx3-ubyte
 /workspace/t10k-labels-idx1-ubyte
 /workspace/train-images-idx3-ubyte
 /workspace/train-labels-idx1-ubyte
 /workspace/pro
 /workspace/model.bin
+/workspace/*.ipynb
 /objs
 /build/*.tar.gz
 /lean
