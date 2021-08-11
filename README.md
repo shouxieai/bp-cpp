@@ -33,6 +33,28 @@ make image              加载workspace/5.bmp文件识别
 make train              训练模型
 ```
 
+## 核心代码
+```c++
+// 前向部分
+auto x           = choice_rows(train_norm_images,   image_indexs, ibatch * batch_size, batch_size);
+auto y           = choice_rows(train_onehot_labels, image_indexs, ibatch * batch_size, batch_size);
+auto hidden      = gemm_mul(x,          false, input_to_hidden,  false) + hidden_bias;
+auto hidden_act  = hidden.relu();
+auto output      = gemm_mul(hidden_act, false, hidden_to_output, false) + output_bias;
+auto probability = output.sigmoid();
+float loss       = compute_loss(probability, y);
+
+// 反向部分
+auto doutput           = (probability - y) / batch_size;
+auto doutput_bias      = row_sum(doutput);
+auto dhidden_to_output = gemm_mul(hidden_act, true, doutput, false);
+auto dhidden_act       = gemm_mul(doutput, false, hidden_to_output, true);
+auto dhidden           = delta_relu(dhidden_act, hidden);
+auto dinput_to_hidden  = gemm_mul(x, true, dhidden, false);
+auto dhidden_bias      = row_sum(dhidden);
+optim.update_params(...);
+```
+
 ## 如果失败，请手动完成
 1. 下载[OpenBLAS](https://github.com/xianyi/OpenBLAS/releases)，编译后放到lean目录下，确保Makefile中路径匹配正确
 2. 下载[MNIST数据集](http://yann.lecun.com/exdb/mnist/)放到workspace目录下
