@@ -43,3 +43,4 @@
 /objs
 /build/*.tar.gz
 /lean
+/build

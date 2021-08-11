@@ -5,5 +5,5 @@ wget http://www.zifuture.com:8090/upload/2021/08/mnist.dataset-a2fb0c8f1f91477d8
 tar -zxvf mnist.dataset.tar.gz
 rm -f mnist.dataset.tar.gz
 
-cd build
+cd openblas_build
 ./openblas_build_and_install.sh

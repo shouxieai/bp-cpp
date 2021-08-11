@@ -15,7 +15,7 @@ include_paths := $(include_paths:%=-I%)
 library_paths := $(library_paths:%=-L%)
 ld_librarys   := $(ld_librarys:%=-l%)
 
-compile_flags := -std=c++11 -w -g -O0 $(include_paths) -fopenmp
+compile_flags := -std=c++11 -w -g -O3 $(include_paths) -fopenmp
 link_flags := $(library_paths) $(ld_librarys) $(run_paths) -lgomp
 
 # 所有的头文件依赖产生的makefile文件，进行include
