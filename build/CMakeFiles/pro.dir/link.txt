@@ -1,1 +1,0 @@
-/usr/bin/c++    -std=c++11 -O3 -Wfatal-errors -pthread -w -g -fopenmp -O3 -DNDEBUG   CMakeFiles/pro.dir/src/main.cpp.o  -o ../workspace/pro  -L/data/sxai/bpc++/lean/OpenBLAS0.3.17/lib -rdynamic -lopenblas -Wl,-rpath,/data/sxai/bpc++/lean/OpenBLAS0.3.17/lib 
