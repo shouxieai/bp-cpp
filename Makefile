@@ -20,7 +20,7 @@ link_flags := $(library_paths) $(ld_librarys) $(run_paths) -lgomp
 
 # 所有的头文件依赖产生的makefile文件，进行include
 ifneq ($(MAKECMDGOALS), clean)
-include $(mks)
+-include $(mks)
 endif
 
 objs/%.o : src/%.cpp
